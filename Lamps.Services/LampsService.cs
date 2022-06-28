@@ -22,6 +22,13 @@ namespace Lamps.Services
             return lamp;
         }
 
+        public async Task<Lamp[]> AddLamps(Lamp[] lamps)
+        {
+            await _dbContext.Lamps.AddRangeAsync(lamps);
+            await _dbContext.SaveChangesAsync();
+            return lamps;
+        }
+
         public async Task<int> DeleteLamp(int id)
         {
             var lamp = await _dbContext.Lamps.FindAsync(id);
@@ -35,6 +42,17 @@ namespace Lamps.Services
             return await _dbContext.SaveChangesAsync();
 
         }
+
+        public async Task<int> Delete(Lamp[] model)
+        {
+            //var lamp = await _dbContext.Lamps.FindAsync(model);
+            var lampsDelete = await _dbContext.Lamps.Where(l => model.Select(m => m.Id).Contains(l.Id)).ToListAsync();
+            _dbContext.Lamps.RemoveRange(lampsDelete);
+            return await _dbContext.SaveChangesAsync();
+
+        }
+
+
 
         public async Task<IEnumerable<Lamp>> GetLamp()
         {
@@ -57,7 +75,7 @@ namespace Lamps.Services
                 .Skip(index * size)
                 .Take(size)
                 .ToListAsync();
-             
+
             return new() { Results = lamps, Total = count };
         }
 
@@ -66,5 +84,7 @@ namespace Lamps.Services
             _dbContext.Entry(lamp).State = EntityState.Modified;
             return await _dbContext.SaveChangesAsync();
         }
+
+
     }
 }

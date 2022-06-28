@@ -39,10 +39,22 @@ namespace Lamps.Api.Controllers
             return await _lampsService.DeleteLamp(id);
         }
 
+        [HttpDelete("list")]
+        public async Task<int> Delete(Lamp[] model)
+        {
+            return await _lampsService.Delete(model);
+        }
+
         [HttpPut]
         public async Task<int> Update(Lamp model)
         {
             return await _lampsService.UpdateLamp(model);
+        }
+
+        [HttpPost("list")]
+        public async Task<Lamp[]> AddLamps(Lamp[] model)
+        {
+            return await _lampsService.AddLamps(model);
         }
     }
 }
